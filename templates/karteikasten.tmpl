@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!--  Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto"
+      rel="stylesheet"
+    />
+    <!-- Bulma -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"
+    />
+    <!-- Import style.css -->
+    <link rel="stylesheet" href="static/css/style.css" />
+    <!-- Title and description -->
+    <meta
+      name="description"
+      content="WebApp um mit Karteikarten zu lernen - WebProgrammierungSS2019"
+    />
+    <!-- Title and description -->
+    <meta
+      name="description"
+      content="WebApp um mit Karteikarten zu lernen - WebProgrammierungSS2019"
+    />
+    <title>BrainTrain</title>
+  </head>
+  <!-- GLOBAL HELPER VARIABLES  -->
+  {{$LoggedIn := .LoggedIn}}
+  <!-- ________________________ -->
+  <body>
+  <!-- Create header and sidebar for logged in user -->
+  {{if eq "true" .LoggedIn}}
+    <!-- Header -->
+    <header>
+      <a href="index" class="logo">
+        <img src="static/logo/Logo.svg" alt="Weisses Logo eines Gehirns" />
+        <h3>BrainTrain</h3>
+      </a>
+      <nav class="burgerNav">
+        <button id="mainButton">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+      <!-- Neue Kartei/ Logout/ Profilpic -->
+      <div class="logout">
+        <a href="edit"><button class="btnYellow newKarteiButton" id="newKarteiButton">
+          Neue Kartei
+        </button></a>
+        <div class="headerUserInfo">
+          <h4 id="logoutUsername">{{.UserName}}</h4>
+          <form action="/logout" method="POST">
+            <button class="logoutButton" id="logoutButton">
+          </form>
+           <small>Logout</small>
+          </button>
+        </div>
+                    {{if .Image}}
+          <img
+            src="data:image/png;base64,{{.Image}}"
+            alt="gray default male profile picture"
+            height="30"
+            width="30"
+          />
+          {{else}}
+          <img
+          src="static/images/defaultUser.png"
+          alt="gray default male profile picture"
+          height="30"
+          width="30"
+          />
+          {{end}}
+        </div>
+      </div>
+    </header>
+    <!-- Sidebar -->
+    <div class="main">
+      <div class="menuSideBar">
+        <ul class="menuList" id="menuList">
+          <li class="menuItems selectedSidebarItem">
+            <a href="index"
+              ><img
+                src="static/icons/Home.svg"
+                alt=""
+                height="30"
+                width="30"
+              />
+              Home</a
+            >
+          </li>
+          <li class="menuItems">
+            <a href="karteikasten"
+              ><img
+                src="static/icons/Karteikasten.svg"
+                alt=""
+                height="30"
+                width="30"
+              />Karteikasten<small
+                class="karteiZaehler"
+                id="indexKastenCounterPublic"
+                >{{.AnzOeffentlicheKaesten}}</small
+              ></a
+            >
+          </li>
+          <li class="menuItems">
+            <a href="meinekarteien"
+            ><img
+              src="static/icons/Meine-Karteien.svg"
+              alt=""
+              height="30"
+              width="30"
+            />
+            Meine Karteien<small class="karteiZaehler" id="indexKartenCounterUser">{{.AnzEigeneKaesten}}</small></a
+          >
+          </li>
+          <li class="menuItems">
+            <a href="profil"
+            ><img
+              src="static/icons/Mein-Profil.svg"
+              alt=""
+              height="30"
+              width="30"
+            />
+            Mein Profil</a
+          >
+        </li>
+        </ul>
+      </div>
+      <!-- Create header and sidebar for NOT logged in user -->
+      {{else}}
+          <header>
+      <a href="index" class="logo">
+        <img src="static/logo/Logo.svg" alt="Weisses Logo eines Gehirns" />
+        <h3>BrainTrain</h3>
+      </a>
+      <nav class="burgerNav">
+        <button id="mainButton">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+      <!-- Inputfelder zum anmelden/registrieren -->
+      <div class="login" id="loginField">
+        <form class="loginForm" action="/authenticate-user" method="POST">
+          <input
+            type="text"
+            placeholder="Nutzername"
+            id="loginUsername"
+            name="username"
+            class="loginInput"
+          />
+          <input
+            type="password"
+            placeholder="Passwort"
+            id="loginPassword"
+            name="password"
+            class="loginInput"
+          />
+          <input
+            type="submit"
+            value="Login"
+            class="btnYellow"
+            id="loginButton"
+          />
+        </form>
+        <a href="register" class="registerLink">Registrieren</a>
+      </div>
+    </header>
+    <!-- Sidebar -->
+    <div class="main">
+      <div class="menuSideBar">
+        <ul class="menuList" id="menuList">
+          <li class="menuItems selectedSidebarItem">
+            <a href="index"
+              ><img
+                src="static/icons/Home.svg"
+                alt=""
+                height="30"
+                width="30"
+              />
+              Home</a
+            >
+          </li>
+          <li class="menuItems">
+            <a href="karteikasten"
+              ><img
+                src="static/icons/Karteikasten.svg"
+                alt=""
+                height="30"
+                width="30"
+              />Karteikasten<small
+                class="karteiZaehler"
+                id="indexKastenCounterPublic"
+                >{{.AnzOeffentlicheKaesten}}</small
+              ></a
+            >
+          </li>
+        </ul>
+      </div>
+      <!-- End of creating header and sidebar -->
+      {{end}}
+      <!-- Main display -->
+      <div class="mainWindow">
+        <h1 class="pageName">
+          <strong>Karteikasten erstellen / Karteikasten bearbeiten</strong>
+        </h1>
+        <div class="flex">
+          <h3>
+            Hier kannst du eine Kartei erstellen oder eine vorhandene nach
+            Bedarf bearbeiten.
+          </h3>
+          <!-- Select options -->
+          <div class="flex">
+            <select class="karteikastenInputSelect" id="karteikastenInputSelect"
+              ><option value="" disabled selected>Sortieren nach...</option
+              ><optgroup label="Naturwissenschaften">
+                <option value="Biologie">Biologie</option>
+                <option value="Chemie">Chemie</option>
+                <option value="Elektrotechnik">Elektrotechnik</option>
+                <option value="Informatik">Informatik</option>
+                <option value="Mathematik">Mathematik</option>
+                <option value="Medizin">Medizin</option>
+                <option value="Naturkunde">Naturkunde</option>
+                <option value="Physik">Physik</option>
+                <option value="Sonstiges">Sonstiges</option>
+              </optgroup>
+              <optgroup label="Sprachen">
+                <option value="Chinesisch">Chinesisch</option>
+                <option value="Deutsch">Deutsch</option>
+                <option value="Englisch">Englisch</option>
+                <option value="Französisch">Französisch</option>
+                <option value="Griechisch">Griechisch</option>
+                <option value="Italienisch">Italienisch</option>
+                <option value="Latein">Latein</option>
+                <option value="Russisch">Russisch</option>
+                <option value="Sonstiges">Sonstiges</option>
+              </optgroup>
+              <optgroup label="Gesellschaft">
+                <option value="Ethik">Ethik</option>
+                <option value="Geschichte">Geschichte</option>
+                <option value="Literatur">Literatur</option>
+                <option value="Musik">Musik</option>
+                <option value="Politik">Politik</option>
+                <option value="Recht">Recht</option>
+                <option value="Soziales">Soziales</option>
+                <option value="Sport">Sport</option>
+                <option value="Verkehrskunde">Verkehrskunde</option>
+                <option value="Sonstiges">Sonstiges</option>
+              </optgroup>
+              <optgroup label="Wirtschaft">
+                <option value="BWL">BWL</option>
+                <option value="Finanzen">Finanzen</option>
+                <option value="Landwirtschaft">Landwirtschaft</option>
+                <option value="Marketing">Marketing</option>
+                <option value="VWL">VWL</option>
+                <option value="Sonstiges">Sonstiges</option>
+              </optgroup>
+              <optgroup label="Geisteswissenschaften">
+                <option value="Kriminologie">Kriminologie</option>
+                <option value="Philosophie">Philosophie</option>
+                <option value="Psychologie">Psychologie</option>
+                <option value="Pädagogik">Pädagogik</option>
+                <option value="Theologie">Theologie</option>
+                <option value="Sonstiges">Sonstiges</option>
+              </optgroup></select
+            >
+            <!-- Search bar -->
+            <input
+              type="text"
+              placeholder="Suche"
+              class="karteikastenInputSearch"
+              id="karteikastenInputSearch"
+            />
+          </div>
+        </div>
+        <!-- Kaesten -->
+        <div id="kaesten">
+          <div>
+            <h2 class="karteikastenThemaHeader">
+              <strong>Naturwissenschaften</strong>
+            </h2>
+          </div>
+          <!-- Naturwissenschaften -->
+          <div class="flex karteikastenLayout" id="naturwissenschaften">
+            {{range .Kaesten}}
+              {{if eq "Naturwissenschaften" .Ueberkategorie}}
+                <div class="karteikastenCard">
+                      <h3 class="karteikastenCardUnterkategorie">{{.Kategorie}}</h3>              
+                      <div class="karteikastenFlex">
+                        <a href='view?_kastenid={{.Id}}' class="karteikastenCardHeader"
+                          ><strong>{{.Titel}}</strong></a
+                        >
+                       <div>
+                         <div class="hexagon hexagon2">
+                          <div class="hexagon-in1">
+                            <div class="hexagon-in2"></div>
+                          </div>
+                        </div>
+                       <div class="karteikastenInsideHexagon">
+                         <p id="karteikastenCounterKartenHexagon">{{.AnzKarten}}</p>
+                          <p>Karten</p>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="karteikastenCardBeschreibung">
+                    {{.Beschreibung}}
+                    </p>
+                      {{if eq "true" $LoggedIn}}<a href='lern?_kastenid={{.Id}}'><button class="btnYellow lernenButtons">Lernen</button></a>{{end}}
+                    </div>
+              {{end}}
+            {{end}}
+          </div>
+          <!-- Sprachen -->
+          <div>
+            <h2 class="karteikastenThemaHeader">
+              <strong>Sprachen</strong>
+            </h2>
+          </div>
+          <div class="flex karteikastenLayout" id="sprachen">
+          {{range .Kaesten}}
+              {{if eq "Sprachen" .Ueberkategorie}}
+                <div class="karteikastenCard">
+                      <h3 class="karteikastenCardUnterkategorie">{{.Kategorie}}</h3>              
+                      <div class="karteikastenFlex">
+                        <a href='view?_kastenid={{.Id}}' class="karteikastenCardHeader"
+                          ><strong>{{.Titel}}</strong></a
+                        >
+                       <div>
+                         <div class="hexagon hexagon2">
+                          <div class="hexagon-in1">
+                            <div class="hexagon-in2"></div>
+                          </div>
+                        </div>
+                       <div class="karteikastenInsideHexagon">
+                         <p id="karteikastenCounterKartenHexagon">{{.AnzKarten}}</p>
+                          <p>Karten</p>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="karteikastenCardBeschreibung">
+                    {{.Beschreibung}}
+                    </p>
+                      {{if eq "true" $LoggedIn}}<a href='lern?_kastenid={{.Id}}'><button class="btnYellow lernenButtons">Lernen</button></a>{{end}}
+                    </div>
+              {{end}}
+            {{end}}
+            </div>
+          <!-- Wirtschaft -->
+          <div>
+            <h2 class="karteikastenThemaHeader">
+              <strong>Wirtschaft</strong>
+            </h2>
+          </div>
+          <div class="flex karteikastenLayout" id="wirtschaft">
+          {{range .Kaesten}}
+              {{if eq "Wirtschaft" .Ueberkategorie}}
+                <div class="karteikastenCard">
+                      <h3 class="karteikastenCardUnterkategorie">{{.Kategorie}}</h3>              
+                      <div class="karteikastenFlex">
+                        <a href='view?_kastenid={{.Id}}' class="karteikastenCardHeader"
+                          ><strong>{{.Titel}}</strong></a
+                        >
+                       <div>
+                         <div class="hexagon hexagon2">
+                          <div class="hexagon-in1">
+                            <div class="hexagon-in2"></div>
+                          </div>
+                        </div>
+                       <div class="karteikastenInsideHexagon">
+                         <p id="karteikastenCounterKartenHexagon">{{.AnzKarten}}</p>
+                          <p>Karten</p>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="karteikastenCardBeschreibung">
+                    {{.Beschreibung}}
+                    </p>
+                      {{if eq "true" $LoggedIn}}<a href='lern?_kastenid={{.Id}}'><button class="btnYellow lernenButtons">Lernen</button></a>{{end}}                   </div>
+              {{end}}
+            {{end}}
+            </div>
+          <div>
+          <!-- Geisteswissenschaften -->
+            <h2 class="karteikastenThemaHeader">
+              <strong>Geisteswissenschaften</strong>
+            </h2>
+          </div>
+          <div class="flex karteikastenLayout" id="geisteswissenschaften">
+          {{range .Kaesten}}
+              {{if eq "Geisteswissenschaften" .Ueberkategorie}}
+                <div class="karteikastenCard">
+                      <h3 class="karteikastenCardUnterkategorie">{{.Kategorie}}</h3>              
+                      <div class="karteikastenFlex">
+                        <a href='view?_kastenid={{.Id}}' class="karteikastenCardHeader"
+                          ><strong>{{.Titel}}</strong></a
+                        >
+                       <div>
+                         <div class="hexagon hexagon2">
+                          <div class="hexagon-in1">
+                            <div class="hexagon-in2"></div>
+                          </div>
+                        </div>
+                       <div class="karteikastenInsideHexagon">
+                         <p id="karteikastenCounterKartenHexagon">{{.AnzKarten}}</p>
+                          <p>Karten</p>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="karteikastenCardBeschreibung">
+                    {{.Beschreibung}}
+                    </p>
+                {{if eq "true" $LoggedIn}}<a href='lern?_kastenid={{.Id}}'><button class="btnYellow lernenButtons">Lernen</button></a>{{end}}</div>
+              {{end}}
+            {{end}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="static/js/karteikasten.js"></script>
+  </body>
+</html>
